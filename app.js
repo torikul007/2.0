@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzJuc0kYSTOotMYQvliRmq1MAHhGZ4BGAiusrpFbC3bBAiKAWHJGdJ0i6-NPcqnkiXF/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxKd1U_Kw0sLtygol3b3VrngzyR47URCQKwgB1K182FIJn_d82EN3UUYWmyRghv6cQ/exec";
 
 // 🔹 LOGIN (send data + get message)
 async function login() {
