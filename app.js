@@ -1,6 +1,6 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbxKd1U_Kw0sLtygol3b3VrngzyR47URCQKwgB1K182FIJn_d82EN3UUYWmyRghv6cQ/exec";
 
-// 🔹 LOGIN (send data + get message)
+// 🔹 LOGIN (send data)
 async function login() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
@@ -13,25 +13,27 @@ async function login() {
   try {
     const res = await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, password })
+      body: new URLSearchParams({
+        email: email,
+        password: password
+      })
     });
 
     const data = await res.json();
 
     document.getElementById("msg").innerText =
-      data.message || "Saved successfully ✔";
+      data.status === "success"
+        ? "Saved successfully ✔"
+        : "Something went wrong ❌";
 
   } catch (err) {
     console.error(err);
-    alert("Error sending data");
+    document.getElementById("msg").innerText = "Server error ❌";
   }
 }
 
 
-// 🔹 LOAD MESSAGE (REAL-TIME POLLING)
+// 🔹 LOAD MESSAGE (GET request)
 async function loadMessage() {
   try {
     const res = await fetch(API_URL);
@@ -39,8 +41,7 @@ async function loadMessage() {
 
     const msgBox = document.getElementById("msg");
 
-    // Only update if changed (reduces flicker)
-    if (msgBox.innerText !== data.message) {
+    if (data.message && msgBox.innerText !== data.message) {
       msgBox.innerText = data.message;
     }
 
@@ -50,10 +51,8 @@ async function loadMessage() {
 }
 
 
-// 🔹 START REAL-TIME LOOP
+// 🔹 START LOOP
 window.onload = () => {
-  loadMessage(); // first load
-
-  // ⚡ fastest safe interval (1.5 seconds)
+  loadMessage();
   setInterval(loadMessage, 1500);
 };
